@@ -615,6 +615,21 @@ React Flow 的平移过滤器（`@xyflow/system` 的 `createFilter`）里有一�
 2. **仓库内无任何密钥**：AI 的 Base URL / API Key 只存在浏览器 localStorage，已 grep 复核源码无 `sk-` 或硬编码 key；
 3. 开发日志与测试用例一并开源——其中的踩坑记录（React Flow 平移过滤器、d3-zoom 事件族）对同类项目有参考价值。
 
+**发布结果（实测复核）**
+
+| 核对项 | 结果 |
+| --- | --- |
+| 仓库 | `https://github.com/soso985/freethought-map` —— **public**，默认分支 `main` |
+| 首次提交 | `c5c5684`「开源发布：FreeThought Map 首个公开版本（MIT）」，**33 文件 / 7424 行**；`git status -sb` 为 `## main...origin/main`，与远端同 SHA 无差异 |
+| 协议识别 | GitHub API 返回 `license.spdx_id = MIT` |
+| 文件可达 | `README.md`、`screenshots/preview-light.png`、`LICENSE` 三个 raw 链接均 HTTP **200**（README 顶部预览图可正常渲染） |
+| 未误传 | 提交清单里 `node_modules` / `dist` 命中数 **0** |
+
+**环境备忘：本机推送踩的两个坑**
+
+1. `gh` 默认**不读 Windows 系统代理**，直连 `github.com` 会超时（`login/device/code` 连不上）——需在其终端会话内先设 `HTTP_PROXY` / `HTTPS_PROXY` 指向本机代理（本次为 `http://127.0.0.1:6450`）再执行；
+2. `gh auth login --web` 的一次性码**只在终端打印**（`First copy your one-time code: XXXX-XXXX`），不会发邮件。
+
 ---
 
 ## 10. 开发流程约定
