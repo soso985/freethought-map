@@ -619,7 +619,7 @@ React Flow 的平移过滤器（`@xyflow/system` 的 `createFilter`）里有一�
 
 | 核对项 | 结果 |
 | --- | --- |
-| 仓库 | `https://github.com/soso985/freethought-map` —— **public**，默认分支 `main` |
+| 仓库 | `https://github.com/soso985/freethought-map` —— **public**，默认分支 `main`，简介与 5 个 topics（react-flow / mindmap / knowledge-graph / typescript / vite）已补齐 |
 | 首次提交 | `c5c5684`「开源发布：FreeThought Map 首个公开版本（MIT）」，**33 文件 / 7424 行**；`git status -sb` 为 `## main...origin/main`，与远端同 SHA 无差异 |
 | 协议识别 | GitHub API 返回 `license.spdx_id = MIT` |
 | 文件可达 | `README.md`、`screenshots/preview-light.png`、`LICENSE` 三个 raw 链接均 HTTP **200**（README 顶部预览图可正常渲染） |
