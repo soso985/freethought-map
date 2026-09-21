@@ -1,0 +1,843 @@
+/* 默认 = 白色主题；深色主题只是把同一批变量重新赋值（html[data-theme='dark']）。
+   所有颜色都从这里取，组件里不要再写死色值，否则切主题会漏改。
+   --tree / --free 两种主题共用，不重复定义。 */
+:root {
+  --bg: #f5f6f8;
+  --bg-panel: #ffffff;
+  --bg-raise: #f2f4f8;
+  --bg-hover: #e8ecf3;
+  --bg-input: #ffffff;
+  --line: #d7dce5;
+  --text: #1f2430;
+  --text-dim: #667085;
+  --accent: #2563eb;
+  --accent-text: #1d4ed8;
+  --on-accent: #ffffff;
+  --tree: #94a3b8;
+  --free: #f472b6;
+  --sel-bg: rgba(37, 99, 235, 0.15);
+  --sel-text: #1d4ed8;
+  --tag-bg: rgba(37, 99, 235, 0.1);
+  --tag-text: #1d4ed8;
+  --note-bg: #fdf5d3;
+  --lock: rgba(15, 23, 42, 0.45);
+  --shadow: rgba(15, 23, 42, 0.16);
+  --backdrop: rgba(15, 23, 42, 0.35);
+  --danger-line: #e6b0b0;
+  --danger-bg: rgba(220, 38, 38, 0.08);
+  --danger-text: #b42318;
+  --primary-bg: #2f6fe0;
+  --primary-line: #2358bd;
+  --primary-text: #ffffff;
+}
+
+html[data-theme='dark'] {
+  --bg: #171a21;
+  --bg-panel: #1e222b;
+  --bg-raise: #262b36;
+  --bg-hover: #313848;
+  --bg-input: #12151c;
+  --line: #333a48;
+  --text: #e6e9ef;
+  --text-dim: #98a2b3;
+  --accent: #60a5fa;
+  --accent-text: #60a5fa;
+  --on-accent: #0b1220;
+  --sel-bg: rgba(96, 165, 250, 0.18);
+  --sel-text: #cfe3ff;
+  --tag-bg: rgba(96, 165, 250, 0.15);
+  --tag-text: #9ecbff;
+  --note-bg: #3b3524;
+  --lock: rgba(255, 255, 255, 0.5);
+  --shadow: rgba(0, 0, 0, 0.45);
+  --backdrop: rgba(0, 0, 0, 0.55);
+  --danger-line: #7f3b3b;
+  --danger-bg: rgba(127, 59, 59, 0.2);
+  --danger-text: #f3b0b0;
+  --primary-bg: #2b4a78;
+  --primary-line: #3b6aa8;
+  --primary-text: #e6e9ef;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.5 system-ui, -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* ---------- 工具栏 ---------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--line);
+}
+
+.toolbar-brand {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.toolbar-hint {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tbtn {
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg-raise);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tbtn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.tbtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tbtn.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+.tbtn--free.is-active {
+  background: var(--free);
+  border-color: var(--free);
+  /* 粉色本身很亮，两种主题下都配深色字才够对比 */
+  color: #0b1220;
+}
+
+.tbtn--primary {
+  background: var(--primary-bg);
+  border-color: var(--primary-line);
+  color: var(--primary-text);
+}
+
+.tbtn--danger {
+  border-color: var(--danger-line);
+  color: var(--danger-text);
+}
+
+.tbtn--danger:hover:not(:disabled) {
+  border-color: var(--danger-text);
+  background: var(--danger-bg);
+}
+
+/* ---------- 通用面板（Inspector / 大纲共用头部与说明文字） ---------- */
+
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel-title {
+  font-weight: 600;
+}
+
+.panel-meta {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.panel-hint {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.panel-warn {
+  margin: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--danger-line);
+  border-radius: 6px;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  font-size: 12px;
+}
+
+.field-label {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+/* ---------- 节点面板（Inspector） ---------- */
+
+.inspector {
+  display: flex;
+  flex: 0 0 300px;
+  flex-direction: column;
+  gap: 6px;
+  width: 300px;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  border-right: 1px solid var(--line);
+  background: var(--bg-panel);
+}
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.swatch {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg-raise);
+  color: var(--text-dim);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.swatch.is-active {
+  border-color: var(--text);
+  box-shadow: 0 0 0 2px var(--shadow);
+}
+
+.link-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg-raise);
+}
+
+.link-row-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.insp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.insp-actions--end {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- 画布 ---------- */
+
+.canvas {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+/* 左键在空白处是「框选」而不是「平移」，React Flow 默认给的 pointer 光标会让人以为点得动，
+   改成十字准星（框选的标准光标）。加上 :not(.dragging) 是为了右键拖动平移时让位给 grabbing。 */
+.react-flow__pane.selection:not(.dragging) {
+  cursor: crosshair;
+}
+
+/* 自由联想线：点击即删除，所以给出手型光标提示 */
+.edge-free {
+  cursor: pointer;
+}
+
+/* 灰色父子线：点击即断开。悬停变红提示「点一下会断」，不做二次确认（Ctrl+Z 可还原） */
+.react-flow__edge-autoTree {
+  cursor: pointer;
+}
+
+.react-flow__edge-autoTree:hover .react-flow__edge-path {
+  stroke: #f87171;
+  stroke-width: 2.5;
+}
+
+.canvas-search {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 5;
+  padding: 4px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--bg-panel);
+  color: var(--accent-text);
+  font-size: 12px;
+  pointer-events: none;
+  box-shadow: 0 2px 10px var(--shadow);
+}
+
+/* ---------- 右键菜单 ---------- */
+
+/* 透明遮罩：点任意位置即关闭菜单，不做任何自动判断 */
+.ctx-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+}
+
+.ctx-menu {
+  position: fixed;
+  z-index: 21;
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg-raise);
+  box-shadow: 0 8px 24px var(--shadow);
+}
+
+.ctx-item {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ctx-item:hover {
+  background: var(--sel-bg);
+}
+
+.ctx-item--danger {
+  color: var(--danger-text);
+}
+
+.ctx-item--danger:hover {
+  background: var(--danger-bg);
+}
+
+/* ---------- 画布控件 ---------- */
+
+/* 默认控件是固定白底，在白色主题下反而没层次，这里统一改成跟主题走 */
+.react-flow__controls {
+  box-shadow: 0 2px 10px var(--shadow);
+}
+
+.react-flow__controls-button {
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-raise);
+  color: var(--text);
+  fill: var(--text);
+}
+
+.react-flow__controls-button:hover {
+  background: var(--bg-hover);
+}
+
+.react-flow__controls-button svg {
+  fill: currentColor;
+}
+
+/* ---------- 锚点（Handle） ---------- */
+
+/* 上下锚点 = 父子线（灰蓝）；左右锚点 = 自由联想线（粉） */
+.react-flow__handle {
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--bg);
+  background: var(--tree);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.react-flow__handle-left,
+.react-flow__handle-right {
+  background: var(--free);
+}
+
+/* 圆点保持 9px（视觉克制），但用透明的 ::after 把可拖拽热区撑到 25px：
+   9px 的圆点鼠标很难精准按中，用户反馈「想加线却抓不住锚点」。
+   pointer-events 是继承属性，顶部锚点（isConnectableStart=false）仍为 none，不会因此变成能拖出。 */
+.react-flow__handle::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+}
+
+/* 悬停高亮：光晕 + 放大，明确「这里能拉线」 */
+.react-flow__handle:hover {
+  transform: scale(1.35);
+  box-shadow: 0 0 0 6px rgba(148, 163, 184, 0.25);
+}
+
+.react-flow__handle-left:hover,
+.react-flow__handle-right:hover {
+  box-shadow: 0 0 0 6px rgba(244, 114, 182, 0.28);
+}
+
+.react-flow__handle-left:hover {
+  transform: scale(1.35) translate(-2px, 0);
+}
+
+.react-flow__handle-right:hover {
+  transform: scale(1.35) translate(2px, 0);
+}
+
+.react-flow__handle-top:hover {
+  transform: scale(1.35) translate(0, -2px);
+}
+
+.react-flow__handle-bottom:hover {
+  transform: scale(1.35) translate(0, 2px);
+}
+
+/* ---------- 节点 ---------- */
+
+/* 这里的默认宽高对应 utils/layout.ts 的 DEFAULT_NODE_W/H：
+   面板里改了尺寸就走 inline style 覆盖，没改就用这套默认值 */
+.tnode {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 220px;
+  min-height: 84px;
+  overflow: hidden;
+  padding: 8px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg-panel);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* 形状：只改外观，不改逻辑关系 */
+.tnode--rect {
+  border-radius: 0;
+}
+
+.tnode--rounded {
+  border-radius: 8px;
+}
+
+.tnode--ellipse {
+  border-radius: 50%;
+  padding: 8px 18px;
+}
+
+.tnode--diamond {
+  border-radius: 4px;
+  transform: rotate(45deg);
+}
+
+/* 菱形内容反向旋转回正，否则文字也是斜的；缩放手柄不参与（要跟着边框一起转才贴合） */
+.tnode--diamond > *:not(.react-flow__resize-control) {
+  transform: rotate(-45deg);
+}
+
+.tnode--note {
+  border-radius: 2px;
+  background: var(--note-bg);
+}
+
+.tnode.is-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25);
+}
+
+/* 缩放控件统一深色配色，避免默认的白色小方块（对照第一轮反馈①的教训） */
+.tnode .react-flow__resize-control.line {
+  border-color: rgba(96, 165, 250, 0.55);
+}
+
+.tnode .react-flow__resize-control.handle {
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--bg);
+  border-radius: 2px;
+  background-color: var(--accent);
+}
+
+.tnode.is-locked {
+  border-style: dashed;
+}
+
+/* 命中当前搜索关键词：只加光晕，不改位置与尺寸 */
+.tnode.is-match {
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.5), 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.tnode-title {
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.tnode-body {
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.tnode-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.tnode-tags span {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  font-size: 11px;
+}
+
+.tnode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+/* 位置锁定的右下角小锁：半透明，不抢视线，只在锁定时出现 */
+.tnode-lock {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  display: inline-flex;
+  color: var(--lock);
+  pointer-events: none;
+}
+
+.tnode-lock svg {
+  width: 13px;
+  height: 13px;
+}
+
+.tnode-fold {
+  padding: 1px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg-raise);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.tnode-input {
+  width: 100%;
+  padding: 2px 4px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text);
+  font: inherit;
+}
+
+/* ---------- 大纲 ---------- */
+
+.outline {
+  display: flex;
+  flex: 0 0 300px;
+  flex-direction: column;
+  width: 300px;
+  min-height: 0;
+  border-left: 1px solid var(--line);
+  background: var(--bg-panel);
+}
+
+.outline-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.outline-search {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.outline-list {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+}
+
+.outline-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.outline-row:hover {
+  background: var(--bg-raise);
+}
+
+.outline-row.is-selected {
+  background: var(--sel-bg);
+  color: var(--sel-text);
+}
+
+/* 搜索时命中的祖先：保留在列表里提供上下文，但灰显 */
+.outline-row.is-dim {
+  opacity: 0.5;
+}
+
+.outline-fold {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.outline-fold--leaf {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.outline-name {
+  word-break: break-word;
+}
+
+.outline-body {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+/* ---------- AI 面板 ---------- */
+
+/* AI 面板是浮在画布上的自由窗口：不占画布宽度，位置由 JS 控制并记忆 */
+.ai-panel {
+  position: fixed;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 340px;
+  max-height: calc(100vh - 96px);
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-panel);
+  box-shadow: 0 12px 32px var(--shadow);
+}
+
+.ai-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: move;
+  user-select: none;
+}
+
+.ai-head button {
+  cursor: pointer;
+}
+
+/* ---------- 节点尺寸输入 ---------- */
+
+.insp-size {
+  display: flex;
+  gap: 6px;
+}
+
+.insp-size .ai-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-title {
+  font-weight: 600;
+}
+
+.ai-hint {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.ai-label {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.ai-textarea,
+.ai-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg-input);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+
+.ai-textarea:focus,
+.ai-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.ai-error {
+  margin: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--danger-line);
+  border-radius: 6px;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  font-size: 12px;
+}
+
+.ai-settings summary {
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.ai-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- 使用说明浮层 ---------- */
+
+/* 原生 <dialog> + showModal()：遮罩、Esc 关闭、焦点陷阱都由浏览器提供 */
+.help-dialog {
+  width: min(580px, calc(100vw - 32px));
+  max-height: min(78vh, 760px);
+  overflow: auto;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-panel);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.75;
+  box-shadow: 0 18px 48px var(--shadow);
+}
+
+.help-dialog::backdrop {
+  background: var(--backdrop);
+}
+
+.help-head {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-panel);
+}
+
+.help-body {
+  padding: 0 14px 16px;
+}
+
+.help-dialog h3 {
+  margin: 16px 0 4px;
+  font-size: 13px;
+  color: var(--accent-text);
+}
+
+.help-dialog ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.help-dialog li {
+  margin: 2px 0;
+}
+
+.help-dialog kbd {
+  padding: 0 5px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg-raise);
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.help-note {
+  margin: 6px 0 0;
+  color: var(--text-dim);
+  font-size: 12px;
+}
